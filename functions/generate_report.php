@@ -2,15 +2,13 @@
 
 require '../vendor/autoload.php';
 
-use PHPJasper\PHPJasper;
-
 function generateReport($param, $input, $connect_db) {
 
 
 	$filename = 'report_'.time(); 
 	$ext = '.pdf';
-    $input = $_SERVER['DOCUMENT_ROOT'] . '/test/reports/' . $input.'.jasper';  
-    $output = $_SERVER['DOCUMENT_ROOT'] . '/test/reports/' . $filename;
+    $input = $_SERVER['DOCUMENT_ROOT'] . '/PHPJasper/reports/' . $input.'.jasper';  
+    $output = $_SERVER['DOCUMENT_ROOT'] . '/PHPJasper/reports/' . $filename;
 
 	if($connect_db){
 		$options = [
@@ -35,7 +33,7 @@ function generateReport($param, $input, $connect_db) {
 	}
 
 
-	$jasper = new PHPJasper;
+	$jasper = new PHPJasper\PHPJasper;
 	$jasper->process(
 		$input,
 		$output,

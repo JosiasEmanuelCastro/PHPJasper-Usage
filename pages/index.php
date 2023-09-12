@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Specify the destination folder for displaying the file tree
-$destinationFolder = $_SERVER['DOCUMENT_ROOT'] . '/test/reports/';
+$destinationFolder = $_SERVER['DOCUMENT_ROOT'] . '/PHPJasper/reports/';
 $fileTree = generateFileTree($destinationFolder);
 ?>
 

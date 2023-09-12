@@ -247,6 +247,9 @@ class PHPJasper
         chdir($this->pathExecutable);
         exec($this->command, $output, $returnVar);
 
+        // echo $this->command . '<br>';
+        // return ;
+
         if ($returnVar !== 0) {
             echo $this->command . '<br>';
             throw new Exception\ErrorCommandExecutable();
