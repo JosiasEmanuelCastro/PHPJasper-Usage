@@ -1,24 +1,28 @@
-<!-- JASPER STUDIO -->
-## Introducción
-La implementación de JASPER php se basa en la utilización de la librería [PHPJasper](https://github.com/PHPJasper/phpjasper).
+# JASPER PHP Implementation
 
-### Requisitos
-Para que esta librería funcione correctamente, es necesario contar con PHP 7.2 o una versión superior. Para instalarla, puedes ejecutar el siguiente comando utilizando Composer:
+La implementación de JASPER en PHP se basa en la utilización de la librería [PHPJasper](https://github.com/PHPJasper/phpjasper).
+
+## Requisitos
+
+Para utilizar esta librería, es necesario cumplir con los siguientes requisitos:
+
+- PHP 7.2 o una versión superior. Puedes instalar la librería con Composer mediante el siguiente comando:
 
 ```bash
 composer require geekcom/phpjasper
 ```
+- Java JDK 1.8 instalado en tu sistema.
 
-Además, es fundamental tener instalado Java JDK 1.8 y el programa JasperStarter. Puedes obtener JasperStarter desde los siguientes enlaces: [SourceForge](https://sourceforge.net/projects/jasperstarter/) o [Sitio Oficial](https://jasperstarter.cenote.de/).
+## Páginas Principales
 
-### Páginas
-Este proyecto contiene dos páginas principales: `pages/index.php` y `pages/compile.php`, que cumplen las siguientes funciones:
+Este proyecto consta de dos páginas principales:
 
-1. **index.php**: Utilizado para compilar un informe. Se deben proporcionar los parámetros ingresados en el campo de entrada de parámetros de la aplicación. Además, puedes especificar una conexión a la base de datos si marcas la casilla "Conectar con base de datos".
+1. **index.php**: Utilizada para compilar un informe. Debes proporcionar los parámetros requeridos en el campo de entrada de parámetros de la aplicación. Además, tienes la opción de especificar una conexión a la base de datos marcando la casilla "Conectar con base de datos".
 
-2. **compile.php**: En la carpeta `reports`, encontrarás los informes. Sin embargo, para crear un informe, necesitas un archivo .jasper. Para obtener este archivo, debes utilizar este compilador, ya que si intentas crear el archivo .jasper con Jasper Studio, es probable que encuentres un error. Solo guarda el archivo .jrxml del informe en la carpeta `reports`, luego, utilizando este compilador, proporciona el nombre del archivo en la carpeta para obtener el resultado final.
+2. **compile.php**: En la carpeta `reports`, encontrarás los informes. Sin embargo, para crear un informe, necesitas un archivo .jasper. Para obtener este archivo, debes utilizar este compilador, ya que si intentas crear el archivo .jasper con Jasper Studio, es probable que encuentres un error. Simplemente guarda el archivo .jrxml del informe en la carpeta `reports`, luego utiliza este compilador y proporciona el nombre del archivo en la carpeta para obtener el resultado final.
 
-### Conexión a la Base de Datos
+## Configuración de Conexión a la Base de Datos
+
 La conexión a la base de datos se configura mediante el parámetro `$options` que se pasa a la clase `PHPJasper`. Aquí tienes un ejemplo:
 
 ```php
@@ -45,16 +49,43 @@ $jasper->process(
 )->execute();
 ```
 
-Es importante notar que debes ubicar el driver correspondiente a la versión de MySQL utilizada en el servidor dentro de la carpeta de instalación de JasperStarter, en la ruta `/docs/jdbc`. Por ejemplo, para MySQL v8.0.31, se utiliza el driver `mysql-connector-j-8.0.31.jar`, que se encuentra en `C:\Program Files (x86)\JasperStarter\docs\jdbc`.
+Y este es un ejemplo utilizando SQL Server:
 
-En el caso de sql server el driver `jtds-1.3.1.jar` se debe encontrar en la carpeta `C:\Program Files (x86)\JasperStarter\jdbc`.
+```php
+// ...
+$options = [
+    'format' => ['pdf'],
+    'locale' => 'en',
+    'params' => [],
+    'db_connection' => [
+        'driver' => 'generic',
+        'host' => '127.0.0.1',
+        'port' => '1433',
+        'database' => 'DataBaseName',
+        'username' => 'UserName',
+        'password' => 'password',
+        'jdbc_driver' => 'com.microsoft.sqlserver.jdbc.SQLServerDriver',
+        'jdbc_url' => 'jdbc:sqlserver://127.0.0.1:1433;databaseName=Teste',
+        'jdbc_dir' => $jdbc_dir
+    ]
+];
+$jasper = new PHPJasper;
+$jasper->process(
+    $input,
+    $output,
+    $options
+)->execute();
+```
 
-### Manejo de Errores
-Cuando ocurre un error durante la compilación o la creación del informe, la página mostrará el comando ejecutado. Para obtener más detalles sobre el problema, se recomienda ejecutar el mismo comando en la consola y depurar cualquier posible error. Los errores pueden surgir debido a las siguientes situaciones:
+Si estás utilizando SQL Server, es esencial que el driver `jtds-1.3.1.jar` se encuentre en la ruta de instalación de JasperStarter que utiliza PHPJasper, que es en `vendor\geekcom\phpjasper\bin\jasperstarter\jdbc`.
 
-- El archivo .jasper no se creó utilizando el compilador proporcionado.
-- Se proporciona un parámetro que no existe en el informe.
-- El informe contiene un error en una fórmula.
-- La fuente solicitada en el informe no existe.
+## Manejo de Errores
+Cuando se produce un error durante la compilación o la creación del informe, la página mostrará el comando ejecutado. Para obtener más detalles sobre el problema, se recomienda ejecutar el mismo comando en la consola y depurar cualquier posible error. Los errores pueden surgir debido a varias situaciones, como la falta de un archivo .jasper, la inclusión de un parámetro inexistente, errores en fórmulas o fuentes inexistentes.
 
-Cuando se encuentra en producción, es recomendable ocultar el comando y mostrar únicamente un mensaje de error en la generación del informe. Lamentablemente, intentamos capturar los detalles de error que se muestran en la consola al ejecutar el comando a través de PHP, pero no fue posible. Por lo tanto, la única forma de ver el error es ejecutar el comando en la consola directamente.
+Desafortunadamente, la captura de detalles de error mostrados en la consola al ejecutar el comando a través de PHP no es posible, por lo que la única forma de ver el error es ejecutar el comando directamente en la consola.
+
+Con el fin de realizar la depuración de los comandos generados por JasperStarter, se debe realizar la instalacion de JasperStarter como una aplicación independiente en el sistema. El archivo de instalación está disponible en la ruta `installers\jasperstarter-3.6.2-Setup.exe`, o puedes descargarlo directamente desde [SourceForge](https://sourceforge.net/projects/jasperstarter/).
+
+Si estás utilizando MySQL asegúrate de colocar el controlador adecuado correspondiente a la versión de MySQL utilizada en el servidor en la carpeta de instalación de JasperStarter. Esto se encuentra en la siguiente ruta: `/docs/jdbc`. Por ejemplo, si estás utilizando MySQL v8.0.31, debes utilizar el controlador denominado `mysql-connector-j-8.0.31.jar`, que estará ubicado en `C:\Program Files (x86)\JasperStarter\docs\jdbc`.
+
+Si estás utilizando SQL Server como tu sistema de gestión de bases de datos, verifica que el controlador denominado `jtds-1.3.1.jar` se encuentre en el directorio `C:\Program Files (x86)\JasperStarter\jdbc`. Esto es esencial para garantizar la conectividad adecuada y un funcionamiento sin problemas.
