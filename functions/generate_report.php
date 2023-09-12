@@ -23,6 +23,17 @@ function generateReport($param, $input, $connect_db) {
 				'database'	=> 'test',
 				'port' 		=> '3306'
 			]
+			// 'db_connection' => [
+			// 	'driver' => 'generic',
+			// 	'host' => '127.0.0.1',
+			// 	'port' => '1433',
+			// 	'database' => 'DataBaseName',
+			// 	'username' => 'UserName',
+			// 	'password' => 'password',
+			// 	'jdbc_driver' => 'com.microsoft.sqlserver.jdbc.SQLServerDriver',
+			// 	'jdbc_url' => 'jdbc:sqlserver://127.0.0.1:1433;databaseName=Teste',
+			// 	'jdbc_dir' => $jdbc_dir
+			// ]
 		];
 	}else{
 		$options = [
