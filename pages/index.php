@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Specify the destination folder for displaying the file tree
-$destinationFolder = $_SERVER['DOCUMENT_ROOT'] . '/PHPJasper/reports/';
+$destinationFolder = realpath('../reports');
 $fileTree = generateFileTree($destinationFolder);
 ?>
 
@@ -60,7 +60,7 @@ $fileTree = generateFileTree($destinationFolder);
         <form method="post" action="">
             <div class="mb-4">
                 <label for="fileName" class="block text-gray-700">File Name (without extension):</label>
-                <input type="text" id="fileName" name="fileName" value="hello_world_params" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500" required>
+                <input type="text" id="fileName" name="fileName" value="test_params" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500" required>
             </div>
 
             <div class="mb-4">

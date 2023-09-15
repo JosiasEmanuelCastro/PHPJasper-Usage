@@ -8,7 +8,7 @@ use PHPJasper\PHPJasper;
 if (isset($_POST['param'])) {
     $param = $_POST['param'];
 
-    $input = $_SERVER['DOCUMENT_ROOT'] . '/PHPJasper/reports/' . $param . '.jrxml';
+    $input = realpath('../reports') . '/' . . $param . '.jrxml';
 
     $jasper = new PHPJasper;
 
@@ -22,7 +22,7 @@ if (isset($_POST['param'])) {
 }
 
 // Specify the destination folder
-$destinationFolder = $_SERVER['DOCUMENT_ROOT'] . '/PHPJasper/reports/';
+$destinationFolder = realpath('../reports');
 $fileTree = generateFileTree($destinationFolder);
 ?>
 
