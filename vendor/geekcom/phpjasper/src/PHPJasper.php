@@ -245,13 +245,15 @@ class PHPJasper
         $returnVar = 0;
 
         chdir($this->pathExecutable);
-        exec($this->command, $output, $returnVar);
-
-        // echo $this->command . '<br>';
-        // return ;
+        
+        // Execute and capture errors
+        exec($this->command . " 2>&1", $output, $returnVar);
 
         if ($returnVar !== 0) {
-            echo $this->command . '<br>';
+            echo '<b>Report generation failed:</b><br>';
+            foreach ($output as $line) {
+                echo $line . '<br>';
+            }
             throw new Exception\ErrorCommandExecutable();
         }
 
