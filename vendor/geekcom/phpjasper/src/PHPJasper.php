@@ -250,11 +250,12 @@ class PHPJasper
         exec($this->command . " 2>&1", $output, $returnVar);
 
         if ($returnVar !== 0) {
-            echo '<b>Report generation failed:</b><br>';
+            $err_str = "";
             foreach ($output as $line) {
-                echo $line . '<br>';
+                $err_str .= $line . '<br>';
             }
-            throw new Exception\ErrorCommandExecutable();
+            echo '<b>Report generation failed:</b><br>' . $err_str;
+            throw new Exception\ErrorCommandExecutable($err_str);
         }
 
         return $output;
