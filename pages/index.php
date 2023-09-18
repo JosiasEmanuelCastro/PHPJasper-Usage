@@ -1,6 +1,75 @@
 <?php
-require '../functions/generate_report.php';
 require '../functions/generate_file_tree.php';
+
+require '../vendor/autoload.php';
+
+function generateFileTree($dir) {
+    $result = "<ul>";
+
+    $files = scandir($dir);
+    foreach ($files as $file) {
+        if ($file != "." && $file != "..") {
+            $filePath = $dir . '/' . $file;
+            if (is_dir($filePath)) {
+                $result .= "<li><strong>$file</strong>";
+                $result .= generateFileTree($filePath); // Recursively generate file tree for subdirectories
+                $result .= "</li>";
+            } else {
+                $result .= "<li>$file</li>";
+            }
+        }
+    }
+
+    $result .= "</ul>";
+    return $result;
+}
+
+function generateReport($param, $input, $connect_db) {
+
+	$filename = 'report_'.time(); 
+	$ext = '.pdf';
+    $input = realpath('../reports') . '/' . $input.'.jasper';  
+    $output = realpath('../reports') . '/' . $filename;
+
+	if($connect_db){
+		$options = [
+			'format' => ['pdf'],
+			'locale' => 'en',
+			'params' =>  $param,
+			'db_connection' => [
+				'driver' 	=> 'mysql',
+				'username' 	=> 'root',
+				'password' 	=> '""',
+				'host' 		=> '127.0.0.1',
+				'database'	=> 'test',
+				'port' 		=> '3306'
+			]
+		];
+	}else{
+		$options = [
+			'format' => ['pdf'],
+			'locale' => 'en',
+			'params' =>  $param,
+		];
+	}
+
+
+	$jasper = new PHPJasper\PHPJasper;
+	$jasper->process(
+		$input,
+		$output,
+		$options
+	)->execute();
+
+	header('Content-Type: application/pdf');
+	header('Content-Disposition: inline; filename="'.basename($output.$ext).'"');
+	header('Content-Length: ' . filesize($output.$ext));
+
+	readfile($output.$ext);
+	unlink($output.$ext);
+
+	flush();
+}
 
 // Check if the form was submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

@@ -4,11 +4,32 @@ require '../functions/generate_file_tree.php';
 
 use PHPJasper\PHPJasper;
 
+function generateFileTree($dir) {
+    $result = "<ul>";
+
+    $files = scandir($dir);
+    foreach ($files as $file) {
+        if ($file != "." && $file != "..") {
+            $filePath = $dir . '/' . $file;
+            if (is_dir($filePath)) {
+                $result .= "<li><strong>$file</strong>";
+                $result .= generateFileTree($filePath); // Recursively generate file tree for subdirectories
+                $result .= "</li>";
+            } else {
+                $result .= "<li>$file</li>";
+            }
+        }
+    }
+
+    $result .= "</ul>";
+    return $result;
+}
+
 // Check if a parameter was submitted via POST
 if (isset($_POST['param'])) {
     $param = $_POST['param'];
 
-    $input = realpath('../reports') . '/' . . $param . '.jrxml';
+    $input = realpath('../reports') . '/' . $param . '.jrxml';
 
     $jasper = new PHPJasper;
 
